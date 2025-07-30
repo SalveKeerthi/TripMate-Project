@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Andaman|TripMate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+      /* General Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #d8edef;
+        text-align: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        box-shadow: 0px 4px 8px rgba(171, 111, 111, 0.1);
+        background-color: #d8edef;
+      }
+
+      .navbar .logo a {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: black;
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-links li {
+        margin: 0 15px;
+      }
+
+      .nav-links a {
+        color: rgb(6, 6, 6);
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      .nav-links a:hover {
+        color: #bebdb6;
+      }
+
+      .menu-toggle {
+        display: none;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+      .heading {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: larger;
+        font-size: x-large;
+      }
+      .abc img {
+        margin-top: 15px;
+        width: 1200px;
+        height: 500px;
+      }
+      .matter {
+        font-size: 20px;
+        margin-top: 20px;
+        padding-top: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .card-container {
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          flex-direction: column;
+          position: absolute;
+          top: 60px;
+          right: 0;
+          background-color: #ffffff;
+          width: 100%;
+          text-align: center;
+          padding: 10px 0;
+        }
+
+        .nav-links li {
+          margin: 10px 0;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+      }
+      
+      /* Heading Section */
+      .heading {
+        margin-top: 30px;
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #000000;
+      }
+
+      /* Image Section */
+      .abc img {
+        margin-top: 20px;
+        width: 90%;
+        max-width: 1200px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Text Content */
+      .matter {
+        font-size: 1.2em;
+        margin: 30px auto;
+        padding: 20px;
+        max-width: 80%;
+        line-height: 1.6;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      /* Card Container */
+      .card-container {
+        display: flex;
+        justify-content: center; /* Center cards */
+        gap: 20px; /* Space between cards */
+        padding: 20px;
+        flex-wrap: wrap;
+        overflow-x: auto; /* Allow scrolling if cards overflow */
+      }
+
+      /* Map Styles */
+      #map-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 20px auto;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+
+      /* Card Styles */
+      .card {
+        position: relative;
+        width: 400px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+      }
+
+      .card .card-body {
+        padding: 15px;
+        text-align: center;
+      }
+
+      .card .card-body h5 {
+        font-size: 1.2em;
+        margin-bottom: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .card-container {
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+        }
+      }
+      .card .radha {
+        margin-top: 15px;
+        font-size: 15px;
+        margin-bottom: 30px;
+        line-height: 1.8;
+      }
+      .card .location {
+        font-weight: 540;
+      }
+      .donasree {
+        margin-bottom: 20px;
+      }
+      .itinerary {
+            max-width: 500px;
+            margin: auto;
+            background: #718b93;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .day {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            background: #000000;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            border-bottom: 2px solid white;
+        }
+        .activities {
+            display: none;
+            padding: 15px;
+        }
+        .activity {
+            background:#d8edef;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .activity i {
+            margin-right: 10px;
+            color: #060606;
+        }
+      footer {
+        background: #333; /* Dark background for contrast */
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        width: 100%;
+         /* Ensures it doesn't overlap content */
+        bottom: 0;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        footer {
+          font-size: 12px; /* Smaller text for smaller screens */
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo"><a href="index1.html">✈️TripMate</a></div>
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="desti.html">Destinations</a></li>
+        <li><a href="plan.html">Planning</a></li>
+        <li><a href="acctr.html">Accommodation & Transport</a></li>
+        <li><a href="desti.html">🔍</a></li>
+        <button>
+          <li><a href="sign.html">Sign Up</a></li>
+        </button>
+      </ul>
+    </nav>
+    <div class="heading">
+      <h1>Andaman and Nicobar Islands</h1>
+    </div>
+    <div class="abc">
+      <img
+        src="https://real-indiatours.com/wp-content/uploads/2020/06/Best-Places-to-Visit-in-Andaman-Nicobar..jpg"
+      />
+    </div>
+    <div id="map-container">
+      <div id="map"></div>
+    </div>
+    <div class="matter">
+      <p>
+        The Andaman and Nicobar Islands, a union territory of India, comprise
+        over 800 islands situated at the southeastern edge of the Bay of Bengal.
+        These islands are renowned for their pristine beaches, lush forests, and
+        rich biodiversity, making them a captivating destination for travelers
+        seeking natural beauty and tranquility.​ These islands offer a blend of
+        historical significance, natural wonders, and adventure activities,
+        making them a must-visit destination for travelers exploring India's
+        diverse landscapes.
+      </p>
+    </div>
+    <div class="donasree">
+      <h2>
+        Here are some of the top tourist attractions in the Andaman and Nicobar
+        Islands
+      </h2>
+    </div>
+    <div class="card-container">
+      <!-- Card 1 -->
+      <div class="card">
+        <img
+          src="https://images.freeimages.com/images/large-previews/ecb/diver-1-1251129.jpg"
+          alt="Andaman"
+        />
+        <div class="card-body">
+          <h5>Radhanagar Beach</h5>
+          <p class="location">📍 Andaman & Nicobar Islands, India</p>
+          <p class="radha">
+            Located on Havelock Island (officially known as Swaraj Dweep),
+            Radhanagar Beach is celebrated for its white sandy shores and clear
+            blue waters. In 2004, it was named "Asia’s Best Beach" by Time
+            magazine.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <img
+          src="https://c8.alamy.com/comp/2E6HN59/historic-cellular-jail-or-kala-pani-on-south-andaman-island-andaman-and-nicobar-islands-india-2E6HN59.jpg"
+          alt="Bangkok"
+        />
+        <div class="card-body">
+          <h5>Cellular Jail</h5>
+          <p class="location">📍 Andaman & Nicobar Islands, India</p>
+          <p class="radha">
+            Situated in Port Blair, the capital city, this colonial-era prison,
+            also known as "Kala Pani," once incarcerated Indian freedom
+            fighters. Today, it stands as a national memorial, offering visitors
+            a glimpse into India's struggle for independence.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <img
+          src="https://cdn.experienceandamans.com/images/entrance-to-wandoor-beach-andaman.jpg"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Mahatma Gandhi Marine Park</h5>
+          <p class="location">📍 Andaman & Nicobar Islands, India</p>
+          <p class="radha">
+            Located near Wandoor, this park encompasses a group of islands and
+            is renowned for its rich marine life, including vibrant coral reefs
+            and nesting sea turtles. Islands like Jolly Buoy and Red Skin within
+            the park are popular spots for snorkeling and glass-bottom boat
+            rides.
+          </p>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="card">
+        <img
+          src="https://lh3.googleusercontent.com/-q8GTubshcPA/WwUEWwyPJfI/AAAAAAABXAo/Lz7sejPJrKQbKqR0VtffxAnSHsz4IPt9wCHMYCw/ross-island-shutterstock-66?imgmax=1600"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Ross Island</h5>
+          <p class="location">📍 Andaman & Nicobar Islands, India</p>
+          <p class="radha">
+            Once the administrative headquarters during British rule, this
+            island near Port Blair now features ruins of colonial structures
+            amidst lush greenery, offering a historical and scenic experience.
+          </p>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="card">
+        <img
+          src="https://www.oyorooms.com/travel-guide/wp-content/uploads/2019/06/7-Reasons-Why-You-Should-Consider-a-Day-Trip-to-Baratang-Island-Hero-Image.jpg"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Baratang Island</h5>
+          <p class="location">📍 Andaman & Nicobar Islands, India</p>
+          <p class="radha">
+            Famous for its limestone caves and mud volcanoes, Baratang provides
+            a unique adventure. Accessible through dense mangrove creeks, the
+            journey itself is an experience to cherish.
+          </p>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="card">
+        <img
+          src="https://i.ibb.co/8jSBV5r/elephant-beach-in-andaman-banner.jpg"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Havelock Island</h5>
+          <p class="location">📍 Andaman & Nicobar Islands, India</p>
+          <p class="radha">
+            Beyond Radhanagar Beach, Havelock is home to other beautiful beaches
+            like Elephant Beach and Kalapathar Beach, offering opportunities for
+            snorkeling, scuba diving, and witnessing bioluminescent waters
+            during certain seasons.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="itenary">
+      <h2>
+        Here is the suggested itinerary for you Andaman and Nicobar Islands Trip
+        Islands
+      </h2>
+    </div>
+    <div class="itinerary">
+      <div class="day" onclick="toggleDay(1)">Day 1 - Arrival & Exploration</div>
+      <div class="activities" id="day1">
+          <div class="activity"><i class="fas fa-ship"></i> Arrive at Port Blair</div>
+          <div class="activity"><i class="fas fa-landmark"></i> Cellular Jail Visit</div>
+          <div class="activity"><i class="fas fa-utensils"></i> Dinner at Lighthouse Restaurant</div>
+      </div>
+      
+      <div class="day" onclick="toggleDay(2)">Day 2 - Havelock Island</div>
+      <div class="activities" id="day2">
+          <div class="activity"><i class="fas fa-water"></i> Ferry to Havelock</div>
+          <div class="activity"><i class="fas fa-umbrella-beach"></i> Radhanagar Beach</div>
+          <div class="activity"><i class="fas fa-fish"></i> Seafood at Barefoot Resort</div>
+      </div>
+      
+      <div class="day" onclick="toggleDay(3)">Day 3 - Adventure & Return</div>
+      <div class="activities" id="day3">
+          <div class="activity"><i class="fas fa-diving-mask"></i> Snorkeling at Elephant Beach</div>
+          <div class="activity"><i class="fas fa-utensils"></i> Lunch at Something Different Cafe</div>
+          <div class="activity"><i class="fas fa-plane"></i> Return to Port Blair</div>
+      </div>
+  </div>
+<footer>
+  <p>© 2025 TripMate. All Rights Reserved.</p>
+</footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      // Initialize map
+      document.addEventListener('DOMContentLoaded', function() {
+        const map = L.map('map').setView([11.7401, 92.6586], 8);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        L.marker([11.7401, 92.6586]).addTo(map)
+          .bindPopup('Andaman Islands')
+          .openPopup();
+      });
+
+      function toggleMenu() {
+        document.getElementById("nav-links").classList.toggle("active");
+      }
+      function toggleDay(day) {
+        let activities = document.getElementById(`day${day}`);
+        activities.style.display = activities.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+  </body>
+</html>
