@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bangkok|TripMate</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+      /* General Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #d8edef;
+        text-align: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        box-shadow: 0px 4px 8px rgba(171, 111, 111, 0.1);
+        background-color: #d8edef;
+      }
+
+      .navbar .logo a {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: black;
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-links li {
+        margin: 0 15px;
+      }
+
+      .nav-links a {
+        color: rgb(6, 6, 6);
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      .nav-links a:hover {
+        color: #bebdb6;
+      }
+
+      .menu-toggle {
+        display: none;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+      .heading {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: larger;
+        font-size: x-large;
+      }
+      .abc img {
+        margin-top: 15px;
+        width: 1200px;
+        height: 500px;
+      }
+      .matter {
+        font-size: 20px;
+        margin-top: 20px;
+        padding-top: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .card-container {
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          flex-direction: column;
+          position: absolute;
+          top: 60px;
+          right: 0;
+          background-color: #ffffff;
+          width: 100%;
+          text-align: center;
+          padding: 10px 0;
+        }
+
+        .nav-links li {
+          margin: 10px 0;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+      }
+
+      /* Heading Section */
+      .heading {
+        margin-top: 30px;
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #000000;
+      }
+
+      /* Image Section */
+      .abc img {
+        margin-top: 20px;
+        width: 90%;
+        max-width: 1200px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Text Content */
+      .matter {
+        font-size: 1.2em;
+        margin: 30px auto;
+        padding: 20px;
+        max-width: 80%;
+        line-height: 1.6;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      /* Card Container */
+      .card-container {
+        display: flex;
+        justify-content: center; /* Center cards */
+        gap: 20px; /* Space between cards */
+        padding: 20px;
+        flex-wrap: wrap;
+        overflow-x: auto; /* Allow scrolling if cards overflow */
+      }
+
+      /* Map Styles */
+      #map-container {
+        width: 90%;
+        max-width: 1200px;
+        height: 500px;
+        margin: 20px auto;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+
+      /* Card Styles */
+      .card {
+        position: relative;
+        width: 400px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+      }
+
+      .card .card-body {
+        padding: 15px;
+        text-align: center;
+      }
+
+      .card .card-body h5 {
+        font-size: 1.2em;
+        margin-bottom: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .card-container {
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+        }
+      }
+      .card .radha {
+        margin-top: 15px;
+        font-size: 15px;
+        margin-bottom: 30px;
+        line-height: 1.8;
+      }
+      .card .location {
+        font-weight: 540;
+      }
+      .donasree {
+        margin-bottom: 20px;
+      }
+      .itinerary {
+        max-width: 500px;
+        margin: auto;
+        background: #718b93;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .day {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        background: #000000;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        border-bottom: 2px solid white;
+      }
+      .activities {
+        display: none;
+        padding: 15px;
+      }
+      .activity {
+        background: #d8edef;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+      }
+      .activity i {
+        margin-right: 10px;
+        color: #060606;
+      }
+      footer {
+        background: #333; /* Dark background for contrast */
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        width: 100%;
+        /* Ensures it doesn't overlap content */
+        bottom: 0;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        footer {
+          font-size: 12px; /* Smaller text for smaller screens */
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo"><a href="index1.html">✈️TripMate</a></div>
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="desti.html">Destinations</a></li>
+        <li><a href="plan.html">Planning</a></li>
+        <li><a href="acctr.html">Accommodation & Transport</a></li>
+        <li><a href="desti.html">🔍</a></li>
+        <button>
+          <li><a href="sign.html">Sign Up</a></li>
+        </button>
+      </ul>
+    </nav>
+    <div class="heading">
+      <h1>Bangkok</h1>
+    </div>
+    <div class="abc">
+      <img
+        src="https://www.seabourn.com/content/dam/sbn65/inventory-assets/ports/o/bkk/port-laem-chabang-bangkok-1334x1001.jpg"
+      />
+    </div>
+    <div id="map-container">
+      <div id="map"></div>
+    </div>
+    <div class="matter">
+      <p>
+        Bangkok, the capital of Thailand, is a vibrant city known for its rich
+        culture and modern skyline. It is home to iconic landmarks like the
+        Grand Palace, Wat Arun, and Wat Pho. The city offers bustling street
+        markets, world-class shopping malls, and a famous street food scene.
+        Visitors can explore floating markets, take a boat ride along the Chao
+        Phraya River, or enjoy its lively nightlife. The BTS Skytrain and MRT
+        subway make getting around easy despite the traffic. Bangkok seamlessly
+        blends tradition with modernity, making it one of the most exciting
+        cities in the world.
+      </p>
+    </div>
+    <div class="donasree">
+      <h2>Here are some of the top tourist attractions in the Bangkok</h2>
+    </div>
+    <div class="card-container">
+      <!-- Card 1 -->
+      <div class="card">
+        <img
+          src="https://a.cdn-hotels.com/gdcs/production88/d1534/da0c22f3-443f-4b20-b38c-ee6d2ba97962.jpg"
+          alt="Bangkok"
+        />
+        <div class="card-body">
+          <h5>Grand Palace & Wat Phra Kaew</h5>
+          <p class="location">📍 Bangkok, Thailand</p>
+          <p class="radha">
+            A magnificent royal complex that served as the official residence of
+            Thai kings for over 200 years. Within its grounds lies Wat Phra Kaew
+            (Temple of the Emerald Buddha), housing Thailand’s most sacred
+            Buddha statue. The palace’s intricate architecture and gold-plated
+            structures make it a must-visit.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <img
+          src="https://www.medtravel.asia/wp-content/uploads/2018/04/wat_arun_bangkok_03.jpg"
+          alt="Bangkok"
+        />
+        <div class="card-body">
+          <h5>Wat Arun</h5>
+          <p class="location">📍 Bangkok, Thailand</p>
+          <p class="radha">
+            Located along the Chao Phraya River, this temple is famous for its
+            towering spires adorned with colorful porcelain. It looks stunning
+            during sunrise and sunset, offering breathtaking views of the river
+            and cityscape. Visitors can also climb its central prang for a
+            panoramic view.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <img
+          src="https://th.bing.com/th/id/R.637ad5107b0db2986c7ec1aa4fb54bb1?rik=hvdcHfZT%2bJML5w&riu=http%3a%2f%2fwhiletravelling.com%2fwp-content%2fuploads%2fwat-pho1.jpg&ehk=8FzuvSQOYuiepwJp3YhwmBBtKbIEUgpHqwNxY2Y1y9U%3d&risl=&pid=ImgRaw&r=0"
+          alt="Bangkok"
+        />
+        <div class="card-body">
+          <h5>Wat Pho</h5>
+          <p class="location">📍 Bangkok, Thailand</p>
+          <p class="radha">
+            One of Bangkok’s oldest and largest temples, best known for its
+            46-meter-long reclining Buddha covered in gold leaf. The temple is
+            also a center for traditional Thai massage, where visitors can
+            experience authentic relaxation techniques.
+          </p>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="card">
+        <img
+          src="https://storage.googleapis.com/fvallimages/uploads/attraction/chatuchak-weekend-market-2020.jpg"
+          alt="Bangkok"
+        />
+        <div class="card-body">
+          <h5>Chatuchak Weekend Market</h5>
+          <p class="location">📍 Bangkok, Thailand</p>
+          <p class="radha">
+            One of the biggest markets in the world, with over 15,000 stalls
+            selling everything from clothing and handicrafts to antiques and
+            street food. It’s a paradise for bargain hunters and food lovers,
+            offering an authentic Thai shopping experience.
+          </p>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="card">
+        <img
+          src="https://i.pinimg.com/736x/05/de/0a/05de0abaf0e9b953b3a5cd94da6da3f8--bangkok-thailand-chiang-mai-thailand.jpg"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Chao Phraya River & Floating Market</h5>
+          <p class="location">📍 Bangkok, Thailand</p>
+          <p class="radha">
+            The lifeline of Bangkok, the Chao Phraya River is best explored via
+            boat cruises, offering views of historic temples and modern
+            skyscrapers. Nearby floating markets like Damnoen Saduak and Taling
+            Chan allow visitors to shop from vendors selling fresh fruits, Thai
+            dishes, and souvenirs from traditional wooden boats.
+          </p>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="card">
+        <img
+          src="https://resource02.ulifestyle.com.hk/ulcms/content/article/thumbnail/1280x720/ut/20200408143458__90178279_3030384343650318_4594229527579721728_o.jpg"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Siam Paragon & MBK Center</h5>
+          <p class="location">📍 Bangkok, Thailand</p>
+          <p class="radha">
+            Two of Bangkok’s most famous shopping malls. Siam Paragon is a
+            luxury shopping destination featuring high-end brands, an aquarium,
+            and fine dining. MBK Center is popular for budget shopping, offering
+            affordable electronics, fashion, and souvenirs
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="itenary">
+      <h2>
+        Here is the suggested itinerary for you Bangkok Trip
+      </h2>
+    </div>
+    <div class="itinerary">
+      <div class="day" onclick="toggleDay(1)">
+        Day 1 - Cultural & Historical Landmarks
+      </div>
+      <div class="activities" id="day1">
+        <div class="activity">
+          <i class="fas fa-ship"></i> Grand Palace & Wat Phra Kaew
+        </div>
+        <div class="activity">
+          <i class="fas fa-landmark"></i> Wat Pho
+        </div>
+        <div class="activity">
+          <i class="fas fa-utensils"></i> Wat Arun 
+        </div>
+      </div>
+
+      <div class="day" onclick="toggleDay(2)">Day 2 - Floating Markets & Shopping</div>
+      <div class="activities" id="day2">
+        <div class="activity">
+          <i class="fas fa-water"></i> Siam Paragon & MBK Center
+        </div>
+        <div class="activity">
+          <i class="fas fa-umbrella-beach"></i> Jim Thompson House
+        </div>
+        <div class="activity">
+          <i class="fas fa-fish"></i> Damnoen Saduak Floating Market
+        </div>
+      </div>
+
+      <div class="day" onclick="toggleDay(3)">Day 3 - Modern Bangkok & Nightlife</div>
+      <div class="activities" id="day3">
+        <div class="activity">
+          <i class="fas fa-diving-mask"></i>ICONSIAM
+        </div>
+        <div class="activity">
+          <i class="fas fa-utensils"></i> Lumphini Park 
+        </div>
+        <div class="activity">
+          <i class="fas fa-plane"></i> Sky Bar at Lebua
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>© 2025 TripMate. All Rights Reserved.</p>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      // Initialize map
+      const map = L.map('map').setView([13.7563, 100.5018], 12);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      L.marker([13.7563, 100.5018]).addTo(map)
+        .bindPopup('Bangkok')
+        .openPopup();
+
+      function toggleMenu() {
+        document.getElementById("nav-links").classList.toggle("active");
+      }
+      function toggleDay(day) {
+        let activities = document.getElementById(`day${day}`);
+        activities.style.display =
+          activities.style.display === "block" ? "none" : "block";
+      }
+    </script>
+  </body>
+</html>
+
