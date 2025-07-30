@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Places</title>
+  <style>
+    html,body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #d8edef;
+      text-align: center;
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .wrapper{
+      flex:1;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      color: rgb(11, 11, 11);
+    }
+    nav .logo a {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: black;
+      text-decoration: none;
+      color: rgb(0, 0, 0);
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+    }
+    .nav-links li {
+      margin: 0 15px;
+    }
+    .nav-links a {
+      color: rgb(6, 6, 6);
+      text-decoration: none;
+      font-size: 1.2em;
+      font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande","Lucida Sans Unicode", "Geneva", Verdana, sans-serif;
+      font-style: normal;
+      font-weight: bold;
+    }
+    .nav-links a:hover {
+      color: #e3e2dc;
+    }
+    .menu-toggle {
+      display: none;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    .search-bar {
+      margin-bottom: 20px;
+    }
+    .search-input {
+      padding: 8px;
+      font-size: 16px;
+      width: 300px;
+    }
+    .result-card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      width: 100%;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          flex-direction: column;
+          position: absolute;
+          top: 60px;
+          right: 0;
+          background-color: #e1dede;
+          width: 100%;
+          text-align: center;
+          padding: 10px 0;
+        }
+        .nav-links li {
+          margin: 10px 0;
+        }
+        .menu-toggle {
+          display: block;
+        }
+        .nav-links.active {
+          display: flex;
+        }
+        footer {
+          font-size: 12px; /* Smaller text for smaller screens */
+          padding: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <nav class="navbar">
+      <div class="logo" ><a href="index1.html">✈️TripMate</a></div>
+      <div class="menu-toggle" onclick="document.getElementById('nav-links').classList.toggle('active')">☰</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="desti.html">Destinations</a></li>
+        <li><a href="plan.html">Planning</a></li>
+        <li><a href="acctr.html">Accommodation & Transport</a></li>
+        <li><a href="desti.html">🔍</a></li>
+        <li><a href="sign.html" class="logout-btn">Log Out</a></li>
+      </ul>
+    </nav>
+    <h1>Search Places</h1>
+    <div class="search-bar">
+      <input type="text" id="search-input" class="search-input" placeholder="Enter a city or place">
+      <button onclick="searchPlaces()">Search</button>
+    </div>
+    <div id="results"></div>
+  </div>
+  <script>
+    const headers = {
+      'x-rapidapi-host': 'opentripmap-places-v1.p.rapidapi.com', // replace with your actual key
+      'x-rapidapi-key': '0f674c9288msh4e449811dc67fe1p132ec3jsncb0c34d617c6'
+    };
+  
+    async function searchPlaces() {
+      const query = document.getElementById('search-input').value.trim();
+      if (!query) return;
+  
+      try {
+        console.log("Searching for:", query);
+  
+        const geoRes = await fetch(
+          `https://opentripmap-places-v1.p.rapidapi.com/en/places/geoname?name=${query}`,
+          { headers }
+        );
+  
+        if (!geoRes.ok) throw new Error("Geoname fetch failed: " + geoRes.status);
+        const location = await geoRes.json();
+        const { lat, lon } = location;
+  
+       
+        const placesRes = await fetch(
+          `https://opentripmap-places-v1.p.rapidapi.com/en/places/radius?radius=10000&lon=${lon}&lat=${lat}&format=json`,
+          { headers }
+        );
+  
+        if (!placesRes.ok) throw new Error("Places fetch failed: " + placesRes.status);
+        const places = await placesRes.json();
+  
+      
+        const resultsContainer = document.getElementById("results");
+        resultsContainer.innerHTML = places.map(place => `
+          <div class="result-card">
+            <h4>${place.name || 'Unnamed Place'}</h4>
+            <a href="place.html?id=${place.xid}">View Details</a>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error:", err);
+        document.getElementById("results").innerHTML = "<p>Something went wrong. Try again later.</p>";
+      }
+    }
+    const http = require('https');
+
+    const options = {
+	    method: 'GET',
+	    hostname: 'opentripmap-places-v1.p.rapidapi.com',
+	    port: null,
+	    path: '/en/places/geoname?name=London',
+	    headers: {
+		    'x-rapidapi-key': '0f674c9288msh4e449811dc67fe1p132ec3jsncb0c34d617c6',
+		    'x-rapidapi-host': 'opentripmap-places-v1.p.rapidapi.com'
+	    }
+    };
+
+    const req = http.request(options, function (res) {
+	    const chunks = [];
+
+	    res.on('data', function (chunk) {
+		    chunks.push(chunk);
+	    });
+
+	    res.on('end', function () {
+		    const body = Buffer.concat(chunks);
+		    console.log(body.toString());
+	    });
+    });
+
+    req.end();
+  </script>
+  <footer>
+       <p> © 2025 TripMate. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>

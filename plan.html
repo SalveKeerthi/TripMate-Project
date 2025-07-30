@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan|TripMate</title>
+    <style>
+        /* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html,body {
+    font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #d8edef;
+      text-align: center;
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 8px rgba(186, 87, 87, 0.1);
+}
+
+.navbar .logo a {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: rgb(6, 6, 6);
+    text-decoration: none;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: #bebdb6;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+.container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+      }
+      .activity {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #e9ecef;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .delete-btn {
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      .add-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .input-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .input-group input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+/* Search Section */
+.abc {
+    margin: 30px 0;
+}
+
+.abc h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.abc input {
+    width: 50%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+}
+/* Responsive Design */
+@media (max-width: 900px) {
+    .card-container {
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #ffffff;
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .abc input {
+        width: 80%;
+    }
+
+    .card-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+footer {
+    background: #333; /* Dark background for contrast */
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    width: 100%;
+    position: relative; /* Ensures it doesn't overlap content */
+    bottom: 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 200px;
+}
+
+@media (max-width: 768px) {
+    footer {
+        font-size: 12px; /* Smaller text for smaller screens */
+        padding: 10px;
+    }
+}
+.card .view-more {
+    display: inline-block;
+    background: #ff6b6b; /* Coral red */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background 0.3s ease-in-out;
+}
+
+.card .view-more:hover {
+    background: #d43f3f; /* Darker red */
+}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><a href="index1.html">✈️TripMate</a></div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="desti.html">Destinations</a></li>
+            <li><a href="plan.html">Planning</a></li>
+            <li><a href="acctr.html">Accommodation & Transport</a></li>
+            <li><a href="desti.html">🔍</a></li>
+            <button><li><a href="sign.html">Sign Up</a></li></button>
+        </ul>
+    </nav>
+
+    <div class="abc">
+        <h2>Plan Your Perfect Itinerary</h2>
+        <p>Customize your travel schedule with our easy-to-use planner. Add activities, manage your time, and create a seamless journey.</p>
+    </div>
+    <div class="container">
+        <h2>TripMate Planner</h2>
+        <div id="activity-list"></div>
+        <div class="input-group">
+          <input type="time" id="time-input" placeholder="Time" />
+          <input type="text" id="activity-input" placeholder="Activity Name" />
+        </div>
+        <button class="add-btn" onclick="addActivity()">+ Add Activity</button>
+        <button class="add-btn" onclick="saveItineraryToFirebase()" style="background: green; margin-top: 10px;">💾 Save Itinerary</button>
+      </div>
+  
+    <footer>
+       <p> © 2025 TripMate. All Rights Reserved.</p>
+    </footer>
+    <script type="module">
+      import { auth, db } from './js/firebase.js';
+      import {
+        doc,
+        updateDoc,
+        arrayUnion
+      } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+      // ✅ Save itinerary to Firestore
+      async function saveItinerary(userId, itinerary) {
+        const userRef = doc(db, 'users', userId);
+
+        // Flatten itinerary array if needed (remove nested arrays)
+        await updateDoc(userRef, {
+          itineraries: arrayUnion(...itinerary)
+        });
+      }
+
+      // ✅ Make all functions globally accessible for HTML to use
+      window.toggleMenu = function () {
+        document.getElementById("nav-links").classList.toggle("active");
+      };
+
+      window.addActivity = function () {
+        const activityList = document.getElementById("activity-list");
+        const timeInput = document.getElementById("time-input").value;
+        const activityInput = document.getElementById("activity-input").value;
+
+        if (!timeInput || !activityInput) {
+          alert("Please enter both time and activity name.");
+          return;
+        }
+
+        const newActivity = document.createElement("div");
+        newActivity.classList.add("activity");
+        newActivity.innerHTML = `<span>${timeInput} - ${activityInput}</span>
+          <button class="delete-btn" onclick="removeActivity(this)">X</button>`;
+        activityList.appendChild(newActivity);
+      };
+
+      window.removeActivity = async function (button) {
+        button.parentElement.remove();
+
+        // Save the updated list after deletion
+        const user = auth.currentUser;
+        if (user) {
+          const items = document.querySelectorAll(".activity span");
+          const updatedItinerary = Array.from(items).map(item => item.textContent);
+
+          try {
+            const userRef = doc(db, 'users', user.uid);
+            await updateDoc(userRef, {
+              itineraries: updatedItinerary
+            });
+          } catch (err) {
+            console.error("Error updating after delete:", err);
+          }
+        }
+      };
+
+
+      window.saveItineraryToFirebase = async function () {
+        const user = auth.currentUser;
+        if (!user) {
+          alert("Please log in to save your itinerary.");
+          return;
+        }
+
+        const items = document.querySelectorAll(".activity span");
+        const itinerary = Array.from(items).map(item => item.textContent);
+
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          await updateDoc(userRef, {
+            itineraries: itinerary  // ⬅️ overwrite instead of appending
+          });
+
+          alert("Itinerary saved successfully!");
+        } catch (err) {
+          console.error("Error saving itinerary:", err);
+          alert("Failed to save itinerary: " + err.message);
+        }
+      };
+      import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+      import { getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const userRef = doc(db, 'users', user.uid);
+          const docSnap = await getDoc(userRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const itinerary = data.itineraries || [];
+
+            const activityList = document.getElementById("activity-list");
+            activityList.innerHTML = "";
+            itinerary.forEach(entry => {
+              const newActivity = document.createElement("div");
+              newActivity.classList.add("activity");
+              newActivity.innerHTML = `<span>${entry}</span>
+                <button class="delete-btn" onclick="removeActivity(this)">X</button>`;
+              activityList.appendChild(newActivity);
+            });
+          }
+        }
+      });
+    </script>
+
+</body>
+</html>
