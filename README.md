@@ -5,6 +5,5 @@ SOFTWARE REQUIREMENTS:
 •	CSS 
 •	Javascript 
 •	Bootstrap 
-•	Node.js 
-•	SQL 
+•	Firebase  
 •	APIs
