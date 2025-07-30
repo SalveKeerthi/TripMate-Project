@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paris|TripMate</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+      /* General Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #d8edef;
+        text-align: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        box-shadow: 0px 4px 8px rgba(171, 111, 111, 0.1);
+        background-color: #d8edef;
+      }
+
+      .navbar .logo a {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: black;
+        text-decoration: none;
+        color: rgb(0, 0, 0);
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-links li {
+        margin: 0 15px;
+      }
+
+      .nav-links a {
+        color: rgb(6, 6, 6);
+        text-decoration: none;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      .nav-links a:hover {
+        color: #bebdb6;
+      }
+
+      .menu-toggle {
+        display: none;
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+      .heading {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: larger;
+        font-size: x-large;
+      }
+      .abc img {
+        margin-top: 15px;
+        width: 1200px;
+        height: 500px;
+      }
+      .matter {
+        font-size: 20px;
+        margin-top: 20px;
+        padding-top: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .card-container {
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          flex-direction: column;
+          position: absolute;
+          top: 60px;
+          right: 0;
+          background-color: #ffffff;
+          width: 100%;
+          text-align: center;
+          padding: 10px 0;
+        }
+
+        .nav-links li {
+          margin: 10px 0;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+      }
+
+      /* Heading Section */
+      .heading {
+        margin-top: 30px;
+        font-size: 2.5em;
+        font-weight: bold;
+        color: #000000;
+      }
+
+      /* Image Section */
+      .abc img {
+        margin-top: 20px;
+        width: 90%;
+        max-width: 1200px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Text Content */
+      .matter {
+        font-size: 1.2em;
+        margin: 30px auto;
+        padding: 20px;
+        max-width: 80%;
+        line-height: 1.6;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      /* Card Container */
+      .card-container {
+        display: flex;
+        justify-content: center; /* Center cards */
+        gap: 20px; /* Space between cards */
+        padding: 20px;
+        flex-wrap: wrap;
+        overflow-x: auto; /* Allow scrolling if cards overflow */
+      }
+
+      /* Map Styles */
+      #map-container {
+        width: 90%;
+        max-width: 1200px;
+        height: 500px;
+        margin: 20px auto;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+
+      /* Card Styles */
+      .card {
+        position: relative;
+        width: 400px;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+      }
+
+      .card .card-body {
+        padding: 15px;
+        text-align: center;
+      }
+
+      .card .card-body h5 {
+        font-size: 1.2em;
+        margin-bottom: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 900px) {
+        .card-container {
+          flex-wrap: wrap; /* Allow wrapping on smaller screens */
+          justify-content: center;
+        }
+      }
+      .card .radha {
+        margin-top: 15px;
+        font-size: 15px;
+        margin-bottom: 30px;
+        line-height: 1.8;
+      }
+      .card .location {
+        font-weight: 540;
+      }
+      .donasree {
+        margin-bottom: 20px;
+      }
+      .itinerary {
+        max-width: 500px;
+        margin: auto;
+        background: #718b93;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .day {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        background: #000000;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        border-bottom: 2px solid white;
+      }
+      .activities {
+        display: none;
+        padding: 15px;
+      }
+      .activity {
+        background: #d8edef;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+      }
+      .activity i {
+        margin-right: 10px;
+        color: #060606;
+      }
+      footer {
+        background: #333; /* Dark background for contrast */
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+        width: 100%;
+        /* Ensures it doesn't overlap content */
+        bottom: 0;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        footer {
+          font-size: 12px; /* Smaller text for smaller screens */
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo"><a href="index1.html">✈️TripMate</a></div>
+      <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="desti.html">Destinations</a></li>
+        <li><a href="plan.html">Planning</a></li>
+        <li><a href="acctr.html">Accommodation & Transport</a></li>
+        <li><a href="desti.html">🔍</a></li>
+        <button>
+          <li><a href="sign.html">Sign Up</a></li>
+        </button>
+      </ul>
+    </nav>
+    <div class="heading">
+      <h1>Paris</h1>
+    </div>
+    <div class="abc">
+      <img src="https://wallpaperaccess.com/full/1721414.jpg" />
+    </div>
+    <div id="map-container">
+      <div id="map"></div>
+    </div>
+    <div class="matter">
+      <p>
+        Paris, the capital of France, is one of the most iconic and romantic
+        cities in the world. Known for its timeless charm, rich history, and
+        artistic elegance, Paris is a global hub of fashion, culture, and
+        gastronomy.With its breathtaking landmarks like the Eiffel Tower, Louvre
+        Museum, and Notre-Dame Cathedral, the city offers a perfect blend of
+        history and modernity. Stroll along the Seine River, explore the
+        bohemian streets of Montmartre, or indulge in world-class French cuisine
+        at charming cafés and Michelin-starred restaurants.Paris is also home to
+        some of the finest art collections, from the Mona Lisa in the Louvre to
+        the impressionist masterpieces in the Musée d'Orsay. Its diverse
+        neighborhoods, like the chic Le Marais, intellectual Latin Quarter, and
+        luxurious Champs-Élysées, each offer unique experiences.
+      </p>
+    </div>
+    <div class="donasree">
+      <h2>
+        Here are some of the top tourist attractions in the Paris
+      </h2>
+    </div>
+    <div class="card-container">
+      <!-- Card 1 -->
+      <div class="card">
+        <img
+          src="https://th.bing.com/th/id/R.20ed9ad1b5dedcd848293191595b19fc?rik=ZsBHGsXmGdHkSQ&riu=http%3a%2f%2f4.bp.blogspot.com%2f-iv0UM3pOmvA%2fT4UefA8bBFI%2fAAAAAAAAANQ%2fG6_cXiHMN5s%2fs1600%2fEiffel.jpg&ehk=XajKKkp0eVnxIRIcjCmTYUP3fwa1G5Wzq4r6kJZntqM%3d&risl=&pid=ImgRaw&r=0"
+          alt="paris"
+        />
+        <div class="card-body">
+          <h5>Eiffel Tower</h5>
+          <p class="location">📍 Paris, France</p>
+          <p class="radha">
+            Built in 1889, the Eiffel Tower stands 330 meters tall and offers
+            breathtaking views of the city.Visitors can take an elevator or
+            climb the stairs to the second floor for a panoramic view.The tower
+            sparkles with golden lights every evening, creating a magical sight.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card">
+        <img
+          src="https://globetrender.com/wp-content/uploads/2020/11/AdobeStock_284387777_Editorial_Use_Only-1-2048x1136.jpeg"
+          alt="paris"
+        />
+        <div class="card-body">
+          <h5>Louvre Museum</h5>
+          <p class="location">📍 Paris, France</p>
+          <p class="radha">
+            The Louvre houses over 35,000 artworks, including the Venus de Milo
+            and Winged Victory of Samothrace.Originally a royal palace, the
+            museum’s stunning glass pyramid entrance is an architectural
+            marvel.It takes at least half a day to explore the highlights.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card">
+        <img
+          src="https://th.bing.com/th/id/OIP.ZISBgWOs_QMTpoMdeR__WgHaFG?rs=1&pid=ImgDetMain"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Notre-Dame Cathedral</h5>
+          <p class="location">📍 Paris, France</p>
+          <p class="radha">
+            Built in the 12th century, Notre-Dame is famous for its intricate
+            sculptures, stained-glass windows, and towering spires.Though the
+            2019 fire damaged much of the interior, restoration is ongoing, and
+            you can still admire its breathtaking façade.The area around the
+            cathedral, Île de la Cité, is one of the oldest parts of Paris.
+          </p>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="card">
+        <img
+          src="https://th.bing.com/th/id/OIP.NqbU1apXQhIlRlbuAMzIAQHaE8?rs=1&pid=ImgDetMain"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Seine River Cruise</h5>
+          <p class="location">📍 Paris, France</p>
+          <p class="radha">
+            A Seine River Cruise takes you past the Eiffel Tower, Louvre,
+            Notre-Dame, and more.The night cruise offers stunning views of Paris
+            illuminated.Some cruises include dinner or a guided tour. Various
+            departure points (Bateaux Parisiens, Vedettes du Pont Neuf) 🎟️ Entry
+            Fee: ~€15–€40 (depending on the cruise type)
+          </p>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="card">
+        <img
+          src="https://th.bing.com/th/id/OIP.rSRw7BlXfW7kxwD5bwAxQQHaE7?rs=1&pid=ImgDetMain"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Palace of Versailles</h5>
+          <p class="location">📍 Paris, France</p>
+          <p class="radha">
+            The Palace of Versailles, once the home of King Louis XIV, is known
+            for its Hall of Mirrors and lavish decorations.The Versailles
+            Gardens cover 800 hectares and feature fountains, sculptures, and
+            hidden groves.It’s a perfect day trip from Paris (45 minutes by
+            train).
+          </p>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="card">
+        <img
+          src="https://th.bing.com/th/id/R.3445076a092259fb7ae9088a0adea4fd?rik=3pU%2fowhuP%2b6tHw&riu=http%3a%2f%2fwww.voyagesbernard.fr%2fwp-content%2fuploads%2fvoyages-bernard-paris-2017-19.jpg&ehk=nxnGrXi9TUjXzz0dS6JgGsK1xia27ZdU8uzU3jBjpiI%3d&risl=&pid=ImgRaw&r=0"
+          alt="Paris"
+        />
+        <div class="card-body">
+          <h5>Sacré-Cœur Basilica & Montmartre</h5>
+          <p class="location">📍 Paris, France</p>
+          <p class="radha">
+            Located on Montmartre Hill, the Sacré-Cœur Basilica is one of the
+            most beautiful churches in Paris.The climb up the dome offers one of
+            the best 360° views of Paris.Nearby, Place du Tertre is a lively
+            square filled with street artists and cozy cafés.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="itenary">
+      <h2>
+        Here is the suggested itinerary for you Paris Trip
+      </h2>
+    </div>
+    <div class="itinerary">
+      <div class="day" onclick="toggleDay(1)">
+        Day 1 - Iconic Paris
+      </div>
+      <div class="activities" id="day1">
+        <div class="activity">
+          <i class="fas fa-ship"></i> Eiffel Tower
+        </div>
+        <div class="activity">
+          <i class="fas fa-landmark"></i> Louvre Museum
+        </div>
+        <div class="activity">
+          <i class="fas fa-utensils"></i> Seine River Cruise
+        </div>
+      </div>
+
+      <div class="day" onclick="toggleDay(2)">Day 2 - History & Montmartre</div>
+      <div class="activities" id="day2">
+        <div class="activity">
+          <i class="fas fa-water"></i> Musée d'Orsay
+        </div>
+        <div class="activity">
+          <i class="fas fa-umbrella-beach"></i>Montmartre & Sacré-Cœur Basilica 
+        </div>
+        <div class="activity">
+          <i class="fas fa-fish"></i> Notre-Dame Cathedral & Île de la Cité
+        </div>
+      </div>
+
+      <div class="day" onclick="toggleDay(3)">Day 3 -  Day Trip & Hidden Gems</div>
+      <div class="activities" id="day3">
+        <div class="activity">
+          <i class="fas fa-diving-mask"></i> Palace of Versailles
+        </div>
+        <div class="activity">
+          <i class="fas fa-utensils"></i> Le Marais
+        </div>
+        <div class="activity">
+          <i class="fas fa-plane"></i> Opéra Garnier
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>© 2025 TripMate. All Rights Reserved.</p>
+    </footer>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      // Initialize map
+      const map = L.map('map').setView([48.8566, 2.3522], 12);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      
+      L.marker([48.8566, 2.3522]).addTo(map)
+        .bindPopup('Paris')
+        .openPopup();
+
+      function toggleMenu() {
+        document.getElementById("nav-links").classList.toggle("active");
+      }
+      function toggleDay(day) {
+        let activities = document.getElementById(`day${day}`);
+        activities.style.display =
+          activities.style.display === "block" ? "none" : "block";
+      }
+    </script>
+  </body>
+</html>
